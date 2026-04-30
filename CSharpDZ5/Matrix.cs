@@ -22,7 +22,7 @@ namespace CSharpDZ5
 
         public Matrix(double[,] values, int rows, int cols)
         {
-            values = new double[rows, cols];
+            _values = values;
 
             Rows = rows; 
             Cols = cols;
@@ -46,7 +46,7 @@ namespace CSharpDZ5
             get
             {
                 if (r >= 0 && r < Rows && c >= 0 && c < Cols)
-                    return _values[r, c];
+                    return this._values[r, c];
                 else
                     Console.WriteLine("Проблемы с диапазоном! -1");
                 return -1;
@@ -54,9 +54,20 @@ namespace CSharpDZ5
             set
             {
                 if (r >= 0 && r < Rows && c >= 0 && c < Cols)
-                    _values[r, c] = value;
+                    this._values[r, c] = value;
                 else
                     Console.WriteLine("Проблемы с диапазоном!");
+            }
+        }
+        public void Print()
+        {
+            for (int i = 0; i < this.Rows; i++)
+            {
+                for(int j = 0; j < this.Cols; j++)
+                {
+                    Console.Write($"{this[i,j]} ");
+                }
+                Console.WriteLine();
             }
         }
 
@@ -89,22 +100,64 @@ namespace CSharpDZ5
 
             temp = new double[leastRows, leastCols];
 
-            double num;
-
             for(int i = 0; i < leastRows; i++)
             {
                 for(int j = 0; j < leastCols; j++)
                 {
-                    for (int k = 0; k < leastRows; k++)
-                    {
-                        for(int l = 0; l < leastCols; l++)
-                        {
-                            num += left[k, l] * right[k, l];
-                        }
-                    }
+                    temp[i, j] = AnsForIndex(i, j, left, right);
                 }
             }
 
+            return new Matrix(temp, leastRows, leastCols);
         }
+        public static Matrix operator +(Matrix left, Matrix right)
+        {
+            double[,] temp;
+            if (left.Rows != right.Rows || left.Cols != right.Cols)
+            {
+                temp = new double[1, 1] { { -1 } };
+                return new Matrix(temp, 1, 1);
+            }
+
+            temp = new double[left.Cols, right.Cols];
+
+            for(int i = 0; i < left.Rows; i++)
+            {
+                for(int j = 0; j < left.Rows; j++)
+                {
+                    temp[i,j] = left[i,j] + right[i,j];
+                }    
+            }
+
+            return new Matrix(temp, left.Rows, left.Cols);
+        }
+
+        private static double AnsForIndex(int index, int jndex, Matrix a, Matrix b)
+        {
+
+            double num = 0;
+
+            for(int i = 0, j = 0; i < a.Cols || j < b.Rows; i++, j++)
+            {
+
+                if(i == 0)
+                {
+                    num += a[index, i] * b[j, jndex];
+                    Console.Write(index + " " + jndex + " = " + a[index, i] + " * " + b[j, jndex] + " ");
+                }
+                else
+                {
+                    num += a[index, i] * b[j, jndex];
+                    Console.Write(a[index, i] + " * " + b[j, jndex] + "\n");
+                }
+                
+            }
+            Console.WriteLine();
+
+            return num;
+
+        }
+
+        
     }
 }
