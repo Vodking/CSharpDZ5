@@ -70,7 +70,7 @@ namespace CSharpDZ5
                 Console.WriteLine();
             }
         }
-
+        // матрица на матрицу
         public static Matrix operator *(Matrix left, Matrix right)
         {
             int leastRows, leastCols;
@@ -110,6 +110,24 @@ namespace CSharpDZ5
 
             return new Matrix(temp, leastRows, leastCols);
         }
+
+        public static Matrix operator *(Matrix left, double right)
+        {
+            double[,] temp;
+            temp = new double[left.Rows, left.Cols];
+
+            for(int i = 0; i < left.Rows; i++)
+            {
+                for(int j = 0; j < left.Cols; j++)
+                {
+                    temp[i, j] = left[i, j] * right;
+                }
+            }
+
+            return new Matrix(temp, left.Rows, left.Cols);
+        }
+
+
         public static Matrix operator +(Matrix left, Matrix right)
         {
             double[,] temp;
@@ -119,17 +137,154 @@ namespace CSharpDZ5
                 return new Matrix(temp, 1, 1);
             }
 
-            temp = new double[left.Cols, right.Cols];
+            temp = new double[left.Rows, right.Cols];
 
             for(int i = 0; i < left.Rows; i++)
             {
-                for(int j = 0; j < left.Rows; j++)
+                for(int j = 0; j < left.Cols; j++)
                 {
                     temp[i,j] = left[i,j] + right[i,j];
                 }    
             }
 
             return new Matrix(temp, left.Rows, left.Cols);
+        }
+
+        public static Matrix operator +(Matrix left, double right)
+        {
+            double[,] temp;
+            temp = new double[left.Rows, left.Cols];
+
+            for (int i = 0; i < left.Rows; i++)
+            {
+                for (int j = 0; j < left.Cols; j++)
+                {
+                    temp[i, j] = left[i, j] + right;
+                }
+            }
+
+            return new Matrix(temp, left.Rows, left.Cols);
+        }
+
+        public static Matrix operator -(Matrix left, Matrix right)
+        {
+            double[,] temp;
+            if (left.Rows != right.Rows || left.Cols != right.Cols)
+            {
+                temp = new double[1, 1] { { -1 } };
+                return new Matrix(temp, 1, 1);
+            }
+
+            temp = new double[left.Rows, right.Cols];
+
+            for (int i = 0; i < left.Rows; i++)
+            {
+                for (int j = 0; j < left.Cols; j++)
+                {
+                    temp[i, j] = left[i, j] - right[i, j];
+                }
+            }
+
+            return new Matrix(temp, left.Rows, left.Cols);
+        }
+        public static Matrix operator -(Matrix left, double right)
+        {
+            double[,] temp;
+            temp = new double[left.Rows, left.Cols];
+
+            for (int i = 0; i < left.Rows; i++)
+            {
+                for (int j = 0; j < left.Cols; j++)
+                {
+                    temp[i, j] = left[i, j] - right;
+                }
+            }
+
+            return new Matrix(temp, left.Rows, left.Cols);
+        }
+
+        public static bool operator <(Matrix left, Matrix right)
+        {
+            double sum1 = 0, sum2 = 0;
+            for(int i = 0;i < left.Rows;i++)
+            {
+                for(int j = 0;j < left.Cols;j++)
+                {
+                    sum1 += left[i, j];
+                }
+            }
+            for (int i = 0; i < right.Rows; i++)
+            {
+                for (int j = 0; j < right.Cols; j++)
+                {
+                    sum2 += right[i, j];
+                }
+            }
+
+            return sum1 < sum2;
+        }
+
+        public static bool operator >(Matrix left, Matrix right)
+        {
+            double sum1 = 0, sum2 = 0;
+            for (int i = 0; i < left.Rows; i++)
+            {
+                for (int j = 0; j < left.Cols; j++)
+                {
+                    sum1 += left[i, j];
+                }
+            }
+            for (int i = 0; i < right.Rows; i++)
+            {
+                for (int j = 0; j < right.Cols; j++)
+                {
+                    sum2 += right[i, j];
+                }
+            }
+
+            return sum1 > sum2;
+        }
+
+        public static bool operator ==(Matrix left, Matrix right)
+        {
+            double sum1 = 0, sum2 = 0;
+            for (int i = 0; i < left.Rows; i++)
+            {
+                for (int j = 0; j < left.Cols; j++)
+                {
+                    sum1 += left[i, j];
+                }
+            }
+            for (int i = 0; i < right.Rows; i++)
+            {
+                for (int j = 0; j < right.Cols; j++)
+                {
+                    sum2 += right[i, j];
+                }
+            }
+
+            return sum1 == sum2;
+        }
+
+        public static bool operator !=(Matrix left, Matrix right)
+        {
+            double sum1 = 0, sum2 = 0;
+            for (int i = 0; i < left.Rows; i++)
+            {
+                for (int j = 0; j < left.Cols; j++)
+                {
+                    sum1 += left[i, j];
+                }
+            }
+            for (int i = 0; i < right.Rows; i++)
+            {
+                for (int j = 0; j < right.Cols; j++)
+                {
+                    sum2 += right[i, j];
+                }
+            }
+
+            return sum1 != sum2;
         }
 
         private static double AnsForIndex(int index, int jndex, Matrix a, Matrix b)
@@ -143,16 +298,16 @@ namespace CSharpDZ5
                 if(i == 0)
                 {
                     num += a[index, i] * b[j, jndex];
-                    Console.Write(index + " " + jndex + " = " + a[index, i] + " * " + b[j, jndex] + " ");
+                    //Console.Write(index + " " + jndex + " = " + a[index, i] + " * " + b[j, jndex] + " ");
                 }
                 else
                 {
                     num += a[index, i] * b[j, jndex];
-                    Console.Write(a[index, i] + " * " + b[j, jndex] + "\n");
+                    //Console.Write(a[index, i] + " * " + b[j, jndex] + "\n");
                 }
                 
             }
-            Console.WriteLine();
+            //Console.WriteLine();
 
             return num;
 
